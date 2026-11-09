@@ -44,6 +44,7 @@ int main(int argc, char* argv[]) {
     const char* inputPath = nullptr;
     const char* outputPath = nullptr;
     long iterations = 0;
+    long inputFrame = 0;
     for (int i = 1; i < argc; ++i) {
         if (std::strcmp(argv[i], "--input") == 0 && i + 1 < argc) {
             inputPath = argv[++i];
@@ -57,20 +58,29 @@ int main(int argc, char* argv[]) {
                 std::fprintf(stderr, "--iterations must be a positive integer\n");
                 return 1;
             }
+        } else if (std::strcmp(argv[i], "--frame") == 0 && i + 1 < argc) {
+            char* end = nullptr;
+            errno = 0;
+            inputFrame = std::strtol(argv[++i], &end, 10);
+            if (errno != 0 || *end != '\0' || inputFrame < 0 || inputFrame > INT_MAX) {
+                std::fprintf(stderr, "--frame must be a non-negative integer\n");
+                return 1;
+            }
         } else {
-            std::fprintf(stderr, "Usage: %s --input video.mp4 --iterations N [--output image.png]\n", argv[0]);
+            std::fprintf(stderr, "Usage: %s --input video.mp4 --iterations N [--frame N] [--output image.png]\n", argv[0]);
             return 1;
         }
     }
     if (inputPath == nullptr || iterations == 0) {
-        std::fprintf(stderr, "Usage: %s --input video.mp4 --iterations N [--output image.png]\n", argv[0]);
+        std::fprintf(stderr, "Usage: %s --input video.mp4 --iterations N [--frame N] [--output image.png]\n", argv[0]);
         return 1;
     }
 
     cv::VideoCapture video(inputPath);
     cv::Mat frame;
-    if (!video.isOpened() || !video.read(frame) || frame.empty()) {
-        std::fprintf(stderr, "Could not load the first frame from %s\n", inputPath);
+    if (!video.isOpened() || !video.set(cv::CAP_PROP_POS_FRAMES, inputFrame) ||
+        !video.read(frame) || frame.empty()) {
+        std::fprintf(stderr, "Could not load frame %ld from %s\n", inputFrame, inputPath);
         return 1;
     }
     if (frame.rows < 3 || frame.cols < 3 || frame.type() != CV_8UC3) {
@@ -87,7 +97,7 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    std::printf("configuration=original threads=1 iterations=%ld checksum=%llu\n",
-                iterations, static_cast<unsigned long long>(checksum(output)));
+    std::printf("configuration=original threads=1 frame=%ld iterations=%ld checksum=%llu\n",
+                inputFrame, iterations, static_cast<unsigned long long>(checksum(output)));
     return 0;
 }

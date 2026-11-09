@@ -81,40 +81,47 @@ int main(int argc, char* argv[]) {
     const char* outputPath = nullptr;
     long iterations = 0;
     long requestedThreads = 0;
+    long inputFrame = 0;
     for (int i = 1; i < argc; ++i) {
         if (std::strcmp(argv[i], "--input") == 0 && i + 1 < argc) {
             inputPath = argv[++i];
         } else if (std::strcmp(argv[i], "--output") == 0 && i + 1 < argc) {
             outputPath = argv[++i];
         } else if ((std::strcmp(argv[i], "--iterations") == 0 ||
-                    std::strcmp(argv[i], "--threads") == 0) && i + 1 < argc) {
+                    std::strcmp(argv[i], "--threads") == 0 ||
+                    std::strcmp(argv[i], "--frame") == 0) && i + 1 < argc) {
             const bool isIterations = std::strcmp(argv[i], "--iterations") == 0;
+            const bool isThreads = std::strcmp(argv[i], "--threads") == 0;
             char* end = nullptr;
             errno = 0;
             const long value = std::strtol(argv[++i], &end, 10);
-            if (errno != 0 || *end != '\0' || value < 1 || value > INT_MAX) {
-                std::fprintf(stderr, "Numeric options must be positive integers\n");
+            if (errno != 0 || *end != '\0' || value > INT_MAX ||
+                (isThreads || isIterations ? value < 1 : value < 0)) {
+                std::fprintf(stderr, "--iterations and --threads must be positive; --frame must be non-negative\n");
                 return 1;
             }
             if (isIterations) {
                 iterations = value;
-            } else {
+            } else if (isThreads) {
                 requestedThreads = value;
+            } else {
+                inputFrame = value;
             }
         } else {
-            std::fprintf(stderr, "Usage: %s --input video.mp4 --threads N --iterations N [--output image.png]\n", argv[0]);
+            std::fprintf(stderr, "Usage: %s --input video.mp4 --threads N --iterations N [--frame N] [--output image.png]\n", argv[0]);
             return 1;
         }
     }
     if (inputPath == nullptr || iterations == 0 || requestedThreads == 0) {
-        std::fprintf(stderr, "Usage: %s --input video.mp4 --threads N --iterations N [--output image.png]\n", argv[0]);
+        std::fprintf(stderr, "Usage: %s --input video.mp4 --threads N --iterations N [--frame N] [--output image.png]\n", argv[0]);
         return 1;
     }
 
     cv::VideoCapture video(inputPath);
     cv::Mat frame;
-    if (!video.isOpened() || !video.read(frame) || frame.empty()) {
-        std::fprintf(stderr, "Could not load the first frame from %s\n", inputPath);
+    if (!video.isOpened() || !video.set(cv::CAP_PROP_POS_FRAMES, inputFrame) ||
+        !video.read(frame) || frame.empty()) {
+        std::fprintf(stderr, "Could not load frame %ld from %s\n", inputFrame, inputPath);
         return 1;
     }
     if (frame.rows < 3 || frame.cols < 3 || frame.type() != CV_8UC3) {
@@ -143,7 +150,8 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    std::printf("configuration=optimized threads=%d iterations=%ld checksum=%llu\n",
-                workerCount, iterations, static_cast<unsigned long long>(checksum(output)));
+    std::printf("configuration=optimized threads=%d frame=%ld iterations=%ld checksum=%llu\n",
+                workerCount, inputFrame, iterations,
+                static_cast<unsigned long long>(checksum(output)));
     return 0;
 }
