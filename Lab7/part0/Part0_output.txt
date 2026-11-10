@@ -1,0 +1,23 @@
+jellio04@jellio04:~/CPE442/Lab7 $ ./sobel_original --input bbb_sunflower_2160p_60fps_normal.mp4 --iterations 500 --frame 1000 --output original.png
+configuration=original threads=1 frame=1000 iterations=500 checksum=4798590701517020338
+jellio04@jellio04:~/CPE442/Lab7 $ ./sobel_optimized --input bbb_sunflower_2160p_60fps_normal.mp4 --threads 1 --iterations 500 --frame 1000 --output 1thread.png
+configuration=optimized threads=1 frame=1000 iterations=500 checksum=4798590701517020338
+jellio04@jellio04:~/CPE442/Lab7 $ ./sobel_optimized --input bbb_sunflower_2160p_60fps_normal.mp4 --threads 2 --iterations 500 --frame 1000 --output 2thread.png
+configuration=optimized threads=2 frame=1000 iterations=500 checksum=4798590701517020338
+jellio04@jellio04:~/CPE442/Lab7 $ ./sobel_optimized --input bbb_sunflower_2160p_60fps_normal.mp4 --threads 4 --iterations 500 --frame 1000 --output 4thread.png
+configuration=optimized threads=4 frame=1000 iterations=500 checksum=4798590701517020338
+jellio04@jellio04:~/CPE442/Lab7 $ ./sobel_optimized --input bbb_sunflower_2160p_60fps_normal.mp4 --threads 8 --iterations 500 --frame 1000 --output 8thread.png
+configuration=optimized threads=8 frame=1000 iterations=500 checksum=4798590701517020338
+
+jellio04@jellio04:~/CPE442/Lab7 $ python3 -c 'import cv2,numpy as np,sys; a=cv2.imread(sys.argv[1],cv2.IMREAD_UNCHANGED); b=cv2.imread(sys.argv[2],cv2.IMREAD_UNCHANGED); assert a is not None and b is not None and a.shape == b.shape, "Images could not be read or have different sizes"; d=cv2.absdiff(a,b); print("maximum pixel difference =", int(d.max())); print("differing pixels =", int(np.count_nonzero(np.any(d != 0, axis=2))))' original.png 1thread.png 
+maximum pixel difference = 0
+differing pixels = 0
+jellio04@jellio04:~/CPE442/Lab7 $ python3 -c 'import cv2,numpy as np,sys; a=cv2.imread(sys.argv[1],cv2.IMREAD_UNCHANGED); b=cv2.imread(sys.argv[2],cv2.IMREAD_UNCHANGED); assert a is not None and b is not None and a.shape == b.shape, "Images could not be read or have different sizes"; d=cv2.absdiff(a,b); print("maximum pixel difference =", int(d.max())); print("differing pixels =", int(np.count_nonzero(np.any(d != 0, axis=2))))' original.png 2thread.png 
+maximum pixel difference = 0
+differing pixels = 0
+jellio04@jellio04:~/CPE442/Lab7 $ python3 -c 'import cv2,numpy as np,sys; a=cv2.imread(sys.argv[1],cv2.IMREAD_UNCHANGED); b=cv2.imread(sys.argv[2],cv2.IMREAD_UNCHANGED); assert a is not None and b is not None and a.shape == b.shape, "Images could not be read or have different sizes"; d=cv2.absdiff(a,b); print("maximum pixel difference =", int(d.max())); print("differing pixels =", int(np.count_nonzero(np.any(d != 0, axis=2))))' original.png 4thread.png 
+maximum pixel difference = 0
+differing pixels = 0
+jellio04@jellio04:~/CPE442/Lab7 $ python3 -c 'import cv2,numpy as np,sys; a=cv2.imread(sys.argv[1],cv2.IMREAD_UNCHANGED); b=cv2.imread(sys.argv[2],cv2.IMREAD_UNCHANGED); assert a is not None and b is not None and a.shape == b.shape, "Images could not be read or have different sizes"; d=cv2.absdiff(a,b); print("maximum pixel difference =", int(d.max())); print("differing pixels =", int(np.count_nonzero(np.any(d != 0, axis=2))))' original.png 8thread.png 
+maximum pixel difference = 0
+differing pixels = 0
