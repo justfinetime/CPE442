@@ -1,0 +1,13 @@
+configuration=optimized threads=1 frame=1000 iterations=500 checksum=4798590701517020338
+configuration=optimized threads=1 frame=1000 iterations=500 checksum=4798590701517020338
+configuration=optimized threads=1 frame=1000 iterations=500 checksum=4798590701517020338
+configuration=optimized threads=1 frame=1000 iterations=500 checksum=4798590701517020338
+configuration=optimized threads=1 frame=1000 iterations=500 checksum=4798590701517020338
+
+ Performance counter stats for './sobel_optimized --input bbb_sunflower_2160p_60fps_normal.mp4 --frame 1000 --threads 1 --iterations 500' (5 runs):
+
+    82,121,317,191      cache-references:u                                                      ( +-  0.01% )
+       147,170,859      cache-misses:u                   #    0.18% of all cache refs           ( +-  0.60% )
+
+          108.2986 +- 0.0371 seconds time elapsed  ( +-  0.03% )
+

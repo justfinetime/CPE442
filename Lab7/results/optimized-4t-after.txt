@@ -1,0 +1,2 @@
+temp=83.7'C
+throttled=0xe0008
