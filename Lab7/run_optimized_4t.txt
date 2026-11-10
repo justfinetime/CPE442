@@ -1,0 +1,21 @@
+# Run from the Lab7 directory after the Pi is within 5 C of the original baseline.
+mkdir -p results
+vcgencmd measure_temp > results/optimized-4t-before.txt
+vcgencmd get_throttled >> results/optimized-4t-before.txt
+
+# Warm-up (not measured).
+./sobel_optimized --input bbb_sunflower_2160p_60fps_normal.mp4 --frame 1000 --threads 4 --iterations 500
+
+# Set A: work and cycles.
+perf stat -r 5 -e cycles:u,instructions:u -- \
+  ./sobel_optimized --input bbb_sunflower_2160p_60fps_normal.mp4 --frame 1000 --threads 4 --iterations 500 \
+  > results/optimized-4t-set-a.txt 2>&1
+
+# Set C: operating-system activity.
+perf stat -r 5 -e task-clock,context-switches,cpu-migrations,page-faults -- \
+  ./sobel_optimized --input bbb_sunflower_2160p_60fps_normal.mp4 --frame 1000 --threads 4 --iterations 500 \
+  > results/optimized-4t-set-c.txt 2>&1
+
+# Check for thermal or power warnings immediately afterward.
+vcgencmd measure_temp > results/optimized-4t-after.txt
+vcgencmd get_throttled >> results/optimized-4t-after.txt

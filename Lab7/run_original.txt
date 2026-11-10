@@ -1,0 +1,21 @@
+# Run from the Lab7 directory. Record this as the baseline temperature.
+mkdir -p results
+vcgencmd measure_temp > results/original-before.txt
+vcgencmd get_throttled >> results/original-before.txt
+
+# Warm-up (not measured).
+./sobel_original --input bbb_sunflower_2160p_60fps_normal.mp4 --frame 1000 --iterations 500
+
+# Set A: work and cycles.
+perf stat -r 5 -e cycles:u,instructions:u -- \
+  ./sobel_original --input bbb_sunflower_2160p_60fps_normal.mp4 --frame 1000 --iterations 500 \
+  > results/original-set-a.txt 2>&1
+
+# Set B: cache behavior.
+perf stat -r 5 -e cache-references:u,cache-misses:u -- \
+  ./sobel_original --input bbb_sunflower_2160p_60fps_normal.mp4 --frame 1000 --iterations 500 \
+  > results/original-set-b.txt 2>&1
+
+# Check for thermal or power warnings immediately afterward.
+vcgencmd measure_temp > results/original-after.txt
+vcgencmd get_throttled >> results/original-after.txt
