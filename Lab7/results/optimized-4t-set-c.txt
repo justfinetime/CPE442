@@ -6,10 +6,10 @@ configuration=optimized threads=4 frame=1000 iterations=500 checksum=47985907015
 
  Performance counter stats for './sobel_optimized --input bbb_sunflower_2160p_60fps_normal.mp4 --frame 1000 --threads 4 --iterations 500' (5 runs):
 
-   138,853,617,365      task-clock:u                     #    3.801 CPUs utilized               ( +-  0.95% )
+   118,442,314,815      task-clock:u                     #    3.772 CPUs utilized               ( +-  0.06% )
                  0      context-switches:u               #    0.000 /sec                      
                  0      cpu-migrations:u                 #    0.000 /sec                      
-            75,451      page-faults:u                    #  543.385 /sec                        ( +-  0.00% )
+            75,452      page-faults:u                    #  637.036 /sec                        ( +-  0.00% )
 
-            36.529 +- 0.507 seconds time elapsed  ( +-  1.39% )
+           31.4040 +- 0.0443 seconds time elapsed  ( +-  0.14% )
 

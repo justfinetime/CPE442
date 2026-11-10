@@ -1,2 +1,2 @@
-temp=84.2'C
-throttled=0xe0008
+temp=79.3'C
+throttled=0x0

@@ -6,8 +6,8 @@ configuration=optimized threads=8 frame=1000 iterations=500 checksum=47985907015
 
  Performance counter stats for './sobel_optimized --input bbb_sunflower_2160p_60fps_normal.mp4 --frame 1000 --threads 8 --iterations 500' (5 runs):
 
-   198,824,715,084      cycles:u                                                                ( +-  0.02% )
-   318,282,907,628      instructions:u                   #    1.60  insn per cycle              ( +-  0.00% )
+   199,060,043,577      cycles:u                                                                ( +-  0.16% )
+   318,282,911,988      instructions:u                   #    1.60  insn per cycle              ( +-  0.00% )
 
-            34.502 +- 0.595 seconds time elapsed  ( +-  1.72% )
+           32.9678 +- 0.0602 seconds time elapsed  ( +-  0.18% )
 
